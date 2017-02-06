@@ -13,10 +13,13 @@ object AppStreamStart {
     val conf = new SparkConf().setAppName("AppStreamStart").setMaster("local[2]")
     val ssc = new StreamingContext(conf, Seconds(2))
 
-//    val stream = DataSource.getTcpSource(ssc)
+    val streamTCP = DataSource.getTcpSource(ssc)
 
     val streamKafka = DataSource.getKafkaSource(ssc)
-    val stream = streamKafka.map(_._2)
+    val streamKafka_map = streamKafka.map(_._2)
+
+    // 合并多个输入流 当接收有瓶颈是可多建几个输入流
+    val stream = streamTCP.union(streamKafka_map)
 
     stream.print()
 
