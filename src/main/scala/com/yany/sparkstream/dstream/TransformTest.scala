@@ -11,21 +11,20 @@ object TransformTest {
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setAppName("AppStreamStart").setMaster("local[2]")
     val ssc = new StreamingContext(conf, Seconds(3))
-    val transformations = new Transformations()
 
     val stream = DataSource.getTcpSource(ssc)
 
-    val mapResult = stream.map(new Transformations().customerMap(_))
+    val mapResult = stream.map(new CustomerFunc().customerMap(_))
     //    mapResult.print()
 
-    val filterResult = mapResult.filter(new Transformations().customerFilter(_))
+    val filterResult = mapResult.filter(new CustomerFunc().customerFilter(_))
     //    filterResult.print()
 
-    val flatMapResult = mapResult.flatMap(new Transformations().customerFlatMap(_))
+    val flatMapResult = mapResult.flatMap(new CustomerFunc().customerFlatMap(_))
     //    flatMapResult.print()
 
     val reduceByKeyResult1 = flatMapResult.map((_, 1)).reduceByKey(_ + _)
-    val reduceByKeyResult = flatMapResult.map((_, "ss")).reduceByKey(new Transformations().customerReduceByKey(_, _))
+    val reduceByKeyResult = flatMapResult.map((_, "ss")).reduceByKey(new CustomerFunc().customerReduceByKey(_, _))
     //    reduceByKeyResult.print()
 
 

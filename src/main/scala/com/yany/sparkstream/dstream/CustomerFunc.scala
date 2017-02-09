@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 /**
   * Created by yanyong on 2017/2/5.
   */
-class Transformations {
+class CustomerFunc {
 
   def customerMap(line: String): String = {
     println("customeMap:" + line)

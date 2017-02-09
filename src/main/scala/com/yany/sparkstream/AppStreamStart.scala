@@ -13,15 +13,19 @@ object AppStreamStart {
     val conf = new SparkConf().setAppName("AppStreamStart").setMaster("local[2]")
     val ssc = new StreamingContext(conf, Seconds(2))
 
-    val streamTCP = DataSource.getTcpSource(ssc)
+    //    val streamTCP = DataSource.getTcpSource(ssc)
 
     val streamKafka = DataSource.getKafkaSource(ssc)
+
     val streamKafka_map = streamKafka.map(_._2)
+    streamKafka_map.print()
+
 
     // 合并多个输入流 当接收有瓶颈是可多建几个输入流
-    val stream = streamTCP.union(streamKafka_map)
+    // A receiver is run within an executor. (注:几个接收者,则至少有几个Core)
+    //    val stream = streamTCP.union(streamKafka_map)
 
-    stream.print()
+    //    stream.print()
 
     ssc.start() // Start the computation
     ssc.awaitTermination() // Wait for the computation to terminate
